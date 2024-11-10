@@ -1,0 +1,135 @@
+using System;
+
+namespace UnitConverter
+{
+    class Program
+    {
+        static void Main(string[] args)
+        {
+            Console.WriteLine("Welcome to the Unit Converter");
+            Console.WriteLine("Choose the type of conversion:");
+            Console.WriteLine("1. Length");
+            Console.WriteLine("2. Weight");
+            Console.WriteLine("3. Temperature");
+
+            int choice = int.Parse(Console.ReadLine()); 
+
+            switch (choice)
+            {
+                case 1:
+                    LengthConversion();
+                    break;
+                case 2:
+                    WeightConversion();
+                    break;
+                case 3:
+                    TemperatureConversion();
+                    break;
+                default:
+                    Console.WriteLine("Invalid choice. Please try again.");
+                    break;
+            }
+        }
+
+        static void LengthConversion()
+        {
+            Console.WriteLine("Length Conversion: Choose units");
+            Console.WriteLine("1. Meters to Kilometers");
+            Console.WriteLine("2. Kilometers to Miles");
+            Console.WriteLine("3. Miles to Feet");
+            Console.WriteLine("4. Feet to Inches");
+
+            int choice = int.Parse(Console.ReadLine());
+            Console.Write("Enter value to convert: ");
+            double value = double.Parse(Console.ReadLine());
+            double result = 0;
+
+            switch (choice)
+            {
+                case 1:
+                    result = value / 1000;
+                    Console.WriteLine($"{value} meters is {result} kilometers.");
+                    break;
+                case 2:
+                    result = value * 0.621371;
+                    Console.WriteLine($"{value} kilometers is {result} miles.");
+                    break;
+                case 3:
+                    result = value * 5280;
+                    Console.WriteLine($"{value} miles is {result} feet.");
+                    break;
+                case 4:
+                    result = value * 12;
+                    Console.WriteLine($"{value} feet is {result} inches.");
+                    break;
+                default:
+                    Console.WriteLine("Invalid choice.");
+                    break;
+            }
+        }
+
+        static void WeightConversion()
+        {
+            Console.WriteLine("Weight Conversion: Choose units");
+            Console.WriteLine("1. Grams to Kilograms");
+            Console.WriteLine("2. Kilograms to Pounds");
+            Console.WriteLine("3. Pounds to Ounces");
+
+            int choice = int.Parse(Console.ReadLine());
+            Console.Write("Enter value to convert: ");
+            double value = double.Parse(Console.ReadLine());
+            double result = 0;
+
+            switch (choice)
+            {
+                case 1:
+                    result = value / 1000;
+                    Console.WriteLine($"{value} grams is {result} kilograms.");
+                    break;
+                case 2:
+                    result = value * 2.20462;
+                    Console.WriteLine($"{value} kilograms is {result} pounds.");
+                    break;
+                case 3:
+                    result = value * 16;
+                    Console.WriteLine($"{value} pounds is {result} ounces.");
+                    break;
+                default:
+                    Console.WriteLine("Invalid choice.");
+                    break;
+            }
+        }
+
+        static void TemperatureConversion()
+        {
+            Console.WriteLine("Temperature Conversion: Choose units");
+            Console.WriteLine("1. Celsius to Fahrenheit");
+            Console.WriteLine("2. Fahrenheit to Kelvin");
+            Console.WriteLine("3. Kelvin to Celsius");
+
+            int choice = int.Parse(Console.ReadLine());
+            Console.Write("Enter temperature to convert: ");
+            double value = double.Parse(Console.ReadLine());
+            double result = 0;
+
+            switch (choice)
+            {
+                case 1:
+                    result = (value * 9/5) + 32;
+                    Console.WriteLine($"{value} Celsius is {result} Fahrenheit.");
+                    break;
+                case 2:
+                    result = (value - 32) * 5/9 + 273.15;
+                    Console.WriteLine($"{value} Fahrenheit is {result} Kelvin.");
+                    break;
+                case 3:
+                    result = value - 273.15;
+                    Console.WriteLine($"{value} Kelvin is {result} Celsius.");
+                    break;
+                default:
+                    Console.WriteLine("Invalid choice.");
+                    break;
+            }
+        }
+    }
+}
