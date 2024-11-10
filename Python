@@ -1,0 +1,86 @@
+def length_conversion(value, from_unit, to_unit):
+    length_units = {
+        'meter': 1,
+        'kilometer': 0.001,
+        'mile': 0.000621371,
+        'foot': 3.28084,
+        'inch': 39.3701
+    }
+    return value * (length_units[to_unit] / length_units[from_unit])
+
+def weight_conversion(value, from_unit, to_unit):
+    weight_units = {
+        'gram': 1,
+        'kilogram': 0.001,
+        'pound': 0.00220462,
+        'ounce': 0.035274
+    }
+    return value * (weight_units[to_unit] / weight_units[from_unit])
+
+def temperature_conversion(value, from_unit, to_unit):
+    if from_unit == 'celsius' and to_unit == 'fahrenheit':
+        return (value * 9/5) + 32
+    elif from_unit == 'fahrenheit' and to_unit == 'celsius':
+        return (value - 32) * 5/9
+    elif from_unit == 'celsius' and to_unit == 'kelvin':
+        return value + 273.15
+    elif from_unit == 'kelvin' and to_unit == 'celsius':
+        return value - 273.15
+    elif from_unit == 'fahrenheit' and to_unit == 'kelvin':
+        return (value - 32) * 5/9 + 273.15
+    elif from_unit == 'kelvin' and to_unit == 'fahrenheit':
+        return (value - 273.15) * 9/5 + 32
+    else:
+        return None
+
+def is_valid_unit(unit, valid_units):
+    return unit in valid_units
+
+def main():
+    print("Welcome to the Unit Converter")
+    conversion_type = input("Choose conversion type (length, weight, temperature): ").lower()
+    
+    if conversion_type not in ['length', 'weight', 'temperature']:
+        print("Invalid conversion type.")
+        return
+    
+    try:
+        value = float(input("Enter value to convert: "))
+    except ValueError:
+        print("Invalid value. Please enter a valid number.")
+        return
+
+    if conversion_type == 'length':
+        valid_units = ['meter', 'kilometer', 'mile', 'foot', 'inch']
+        from_unit = input("Enter from unit (meter, kilometer, mile, foot, inch): ").lower()
+        to_unit = input("Enter to unit: ").lower()
+        if not is_valid_unit(from_unit, valid_units) or not is_valid_unit(to_unit, valid_units):
+            print("Invalid length unit.")
+            return
+        result = length_conversion(value, from_unit, to_unit)
+
+    elif conversion_type == 'weight':
+        valid_units = ['gram', 'kilogram', 'pound', 'ounce']
+        from_unit = input("Enter from unit (gram, kilogram, pound, ounce): ").lower()
+        to_unit = input("Enter to unit: ").lower()
+        if not is_valid_unit(from_unit, valid_units) or not is_valid_unit(to_unit, valid_units):
+            print("Invalid weight unit.")
+            return
+        result = weight_conversion(value, from_unit, to_unit)
+
+    elif conversion_type == 'temperature':
+        valid_units = ['celsius', 'fahrenheit', 'kelvin']
+        from_unit = input("Enter from unit (celsius, fahrenheit, kelvin): ").lower()
+        to_unit = input("Enter to unit: ").lower()
+        if not is_valid_unit(from_unit, valid_units) or not is_valid_unit(to_unit, valid_units):
+            print("Invalid temperature unit.")
+            return
+        result = temperature_conversion(value, from_unit, to_unit)
+        if result is None:
+            print("Invalid conversion for the specified units.")
+            return
+
+    print(f"{value} {from_unit} is {result} {to_unit}.")
+
+if __name__ == "__main__":
+    main()
