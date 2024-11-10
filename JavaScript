@@ -1,0 +1,122 @@
+const readline = require("readline").createInterface({
+    input: process.stdin,
+    output: process.stdout
+});
+
+function lengthConversion(value, fromUnit, toUnit) {
+    const lengthUnits = {
+        meter: 1,
+        kilometer: 0.001,
+        mile: 0.000621371,
+        foot: 3.28084,
+        inch: 39.3701
+    };
+    return value * (lengthUnits[toUnit] / lengthUnits[fromUnit]);
+}
+
+function weightConversion(value, fromUnit, toUnit) {
+    const weightUnits = {
+        gram: 1,
+        kilogram: 0.001,
+        pound: 0.00220462,
+        ounce: 0.035274
+    };
+    return value * (weightUnits[toUnit] / weightUnits[fromUnit]);
+}
+
+function temperatureConversion(value, fromUnit, toUnit) {
+    // Celsius to Fahrenheit
+    if (fromUnit === "celsius" && toUnit === "fahrenheit") {
+        return (value * 9/5) + 32;
+    }
+    // Fahrenheit to Celsius
+    if (fromUnit === "fahrenheit" && toUnit === "celsius") {
+        return (value - 32) * 5/9;
+    }
+    // Celsius to Kelvin
+    if (fromUnit === "celsius" && toUnit === "kelvin") {
+        return value + 273.15;
+    }
+    // Kelvin to Celsius
+    if (fromUnit === "kelvin" && toUnit === "celsius") {
+        return value - 273.15;
+    }
+    // Fahrenheit to Kelvin
+    if (fromUnit === "fahrenheit" && toUnit === "kelvin") {
+        return (value - 32) * 5/9 + 273.15;
+    }
+    // Kelvin to Fahrenheit
+    if (fromUnit === "kelvin" && toUnit === "fahrenheit") {
+        return (value - 273.15) * 9/5 + 32;
+    }
+    return null; // Invalid conversion
+}
+
+function askQuestion(query) {
+    return new Promise((resolve) => readline.question(query, resolve));
+}
+
+async function startConversion() {
+    try {
+        const type = await askQuestion("Choose conversion type (length, weight, temperature): ");
+        
+        if (!['length', 'weight', 'temperature'].includes(type)) {
+            console.log("Invalid conversion type.");
+            readline.close();
+            return;
+        }
+        
+        const value = parseFloat(await askQuestion("Enter value to convert: "));
+        
+        if (isNaN(value)) {
+            console.log("Please enter a valid number for the value.");
+            readline.close();
+            return;
+        }
+
+        let fromUnit, toUnit;
+
+        if (type === "length") {
+            fromUnit = await askQuestion("Enter from unit (meter, kilometer, mile, foot, inch): ");
+            toUnit = await askQuestion("Enter to unit: ");
+            if (!['meter', 'kilometer', 'mile', 'foot', 'inch'].includes(fromUnit) || !['meter', 'kilometer', 'mile', 'foot', 'inch'].includes(toUnit)) {
+                console.log("Invalid length units.");
+                readline.close();
+                return;
+            }
+            const result = lengthConversion(value, fromUnit, toUnit);
+            console.log(`${value} ${fromUnit} is ${result} ${toUnit}.`);
+        } else if (type === "weight") {
+            fromUnit = await askQuestion("Enter from unit (gram, kilogram, pound, ounce): ");
+            toUnit = await askQuestion("Enter to unit: ");
+            if (!['gram', 'kilogram', 'pound', 'ounce'].includes(fromUnit) || !['gram', 'kilogram', 'pound', 'ounce'].includes(toUnit)) {
+                console.log("Invalid weight units.");
+                readline.close();
+                return;
+            }
+            const result = weightConversion(value, fromUnit, toUnit);
+            console.log(`${value} ${fromUnit} is ${result} ${toUnit}.`);
+        } else if (type === "temperature") {
+            fromUnit = await askQuestion("Enter from unit (celsius, fahrenheit, kelvin): ");
+            toUnit = await askQuestion("Enter to unit: ");
+            if (!['celsius', 'fahrenheit', 'kelvin'].includes(fromUnit) || !['celsius', 'fahrenheit', 'kelvin'].includes(toUnit)) {
+                console.log("Invalid temperature units.");
+                readline.close();
+                return;
+            }
+            const result = temperatureConversion(value, fromUnit, toUnit);
+            if (result === null) {
+                console.log("Invalid temperature conversion.");
+            } else {
+                console.log(`${value} ${fromUnit} is ${result} ${toUnit}.`);
+            }
+        }
+
+    } catch (error) {
+        console.log("Error occurred:", error);
+    } finally {
+        readline.close();
+    }
+}
+
+startConversion();
