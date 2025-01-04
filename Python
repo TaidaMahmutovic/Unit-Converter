@@ -1,0 +1,82 @@
+def convert_length(v, from_u, to_u):
+    u = {
+        'meter': 1, 'kilometer': 0.001, 'mile': 0.000621371, 
+        'foot': 3.28084, 'inch': 39.3701
+    }
+    return v * (u[to_u] / u[from_u])
+
+def convert_weight(v, from_u, to_u):
+    u = {
+        'gram': 1, 'kilogram': 0.001, 'pound': 0.00220462, 'ounce': 0.035274
+    }
+    return v * (u[to_u] / u[from_u])
+
+def convert_temp(v, from_u, to_u):
+    if from_u == 'celsius' and to_u == 'fahrenheit':
+        return (v * 9 / 5) + 32
+    if from_u == 'fahrenheit' and to_u == 'celsius':
+        return (v - 32) * 5 / 9
+    if from_u == 'celsius' and to_u == 'kelvin':
+        return v + 273.15
+    if from_u == 'kelvin' and to_u == 'celsius':
+        return v - 273.15
+    if from_u == 'fahrenheit' and to_u == 'kelvin':
+        return (v - 32) * 5 / 9 + 273.15
+    if from_u == 'kelvin' and to_u == 'fahrenheit':
+        return (v - 273.15) * 9 / 5 + 32
+    return None
+
+def display_units(units):
+    for i, unit in enumerate(units, 1):
+        print(f"{i}. {unit}")
+
+def get_unit_choice(units, prompt):
+    while True:
+        print(prompt)
+        display_units(units)
+        try:
+            choice = int(input("Choose a number: "))
+            if 1 <= choice <= len(units):
+                return units[choice - 1]
+            else:
+                print("Invalid choice, please try again.")
+        except ValueError:
+            print("Invalid input, please enter a number.")
+
+def main():
+    print("Unit Converter")
+    types = ["length", "weight", "temp"]
+    type_prompt = "Choose type of conversion:"
+    conversion_type = get_unit_choice(types, type_prompt)
+
+    try:
+        value = float(input("Enter value to convert: "))
+    except ValueError:
+        print("Invalid value. Exiting program.")
+        return
+
+    if conversion_type == "length":
+        units = ['meter', 'kilometer', 'mile', 'foot', 'inch']
+        from_unit = get_unit_choice(units, "Select the 'From' unit:")
+        to_unit = get_unit_choice(units, "Select the 'To' unit:")
+        result = convert_length(value, from_unit, to_unit)
+
+    elif conversion_type == "weight":
+        units = ['gram', 'kilogram', 'pound', 'ounce']
+        from_unit = get_unit_choice(units, "Select the 'From' unit:")
+        to_unit = get_unit_choice(units, "Select the 'To' unit:")
+        result = convert_weight(value, from_unit, to_unit)
+
+    elif conversion_type == "temp":
+        units = ['celsius', 'fahrenheit', 'kelvin']
+        from_unit = get_unit_choice(units, "Select the 'From' unit:")
+        to_unit = get_unit_choice(units, "Select the 'To' unit:")
+        result = convert_temp(value, from_unit, to_unit)
+        if result is None:
+            print("Invalid temperature conversion!")
+            return
+
+    print(f"{value} {from_unit} = {result} {to_unit}")
+
+if __name__ == "__main__":
+    main()
