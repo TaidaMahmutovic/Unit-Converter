@@ -1,0 +1,163 @@
+using System;
+using System.Collections.Generic;
+
+namespace UnitConverter
+{
+    class Program
+    {
+        static readonly Dictionary<string, double> LengthUnits = new()
+        {
+            { "meter", 1 },
+            { "kilometer", 0.001 },
+            { "mile", 0.000621371 },
+            { "foot", 3.28084 },
+            { "inch", 39.3701 }
+        };
+
+        static readonly Dictionary<string, double> WeightUnits = new()
+        {
+            { "gram", 1 },
+            { "kilogram", 0.001 },
+            { "pound", 0.00220462 },
+            { "ounce", 0.035274 }
+        };
+
+        static readonly string[] TempUnits = { "celsius", "fahrenheit", "kelvin" };
+
+        static void Main(string[] args)
+        {
+            Console.WriteLine("Welcome to Unit Converter!");
+            Console.WriteLine("Select Conversion Type:");
+            Console.WriteLine("1. Length");
+            Console.WriteLine("2. Weight");
+            Console.WriteLine("3. Temperature");
+
+            if (!int.TryParse(Console.ReadLine(), out int typeChoice) || typeChoice < 1 || typeChoice > 3)
+            {
+                Console.WriteLine("Invalid choice. Exiting program.");
+                return;
+            }
+
+            string conversionType = typeChoice switch
+            {
+                1 => "length",
+                2 => "weight",
+                3 => "temperature",
+                _ => null
+            };
+
+            if (conversionType == null)
+            {
+                Console.WriteLine("Invalid conversion type. Exiting program.");
+                return;
+            }
+
+            PerformConversion(conversionType);
+        }
+
+        static void PerformConversion(string conversionType)
+        {
+            Console.Write("Enter value to convert: ");
+            if (!double.TryParse(Console.ReadLine(), out double value))
+            {
+                Console.WriteLine("Invalid value. Exiting program.");
+                return;
+            }
+
+            string fromUnit = SelectUnit(conversionType, "Select the 'From' unit:");
+            string toUnit = SelectUnit(conversionType, "Select the 'To' unit:");
+
+            if (fromUnit == null || toUnit == null)
+            {
+                Console.WriteLine("Invalid unit selection. Exiting program.");
+                return;
+            }
+
+            double result = conversionType switch
+            {
+                "length" => ConvertUnits(value, fromUnit, toUnit, LengthUnits),
+                "weight" => ConvertUnits(value, fromUnit, toUnit, WeightUnits),
+                "temperature" => ConvertTemperature(value, fromUnit, toUnit),
+                _ => throw new ArgumentException("Unknown conversion type.")
+            };
+
+            Console.WriteLine($"{value} {fromUnit} = {result} {toUnit}");
+        }
+
+        static string SelectUnit(string conversionType, string prompt)
+        {
+            Console.WriteLine(prompt);
+            Dictionary<string, double> units = conversionType switch
+            {
+                "length" => LengthUnits,
+                "weight" => WeightUnits,
+                "temperature" => null,
+                _ => null
+            };
+
+            if (conversionType == "temperature")
+            {
+                for (int idx = 0; idx < TempUnits.Length; idx++)
+                {
+                    Console.WriteLine($"{idx + 1}. {TempUnits[idx]}");
+                }
+
+                if (!int.TryParse(Console.ReadLine(), out int tempChoice) || tempChoice < 1 || tempChoice > TempUnits.Length)
+                {
+                    Console.WriteLine("Invalid choice. Exiting program.");
+                    return null;
+                }
+                return TempUnits[tempChoice - 1];
+            }
+
+            int index = 1;
+            foreach (var unit in units.Keys)
+            {
+                Console.WriteLine($"{index}. {unit}");
+                index++;
+            }
+
+            if (!int.TryParse(Console.ReadLine(), out int choice) || choice < 1 || choice > units.Count)
+            {
+                Console.WriteLine("Invalid choice. Exiting program.");
+                return null;
+            }
+
+            string selectedUnit = null;
+            int unitIndex = 1;
+            foreach (var unit in units.Keys)
+            {
+                if (unitIndex == choice)
+                {
+                    selectedUnit = unit;
+                    break;
+                }
+                unitIndex++;
+            }
+
+            return selectedUnit;
+        }
+
+        static double ConvertUnits(double value, string fromUnit, string toUnit, Dictionary<string, double> unitMap)
+        {
+            if (!unitMap.ContainsKey(fromUnit) || !unitMap.ContainsKey(toUnit))
+            {
+                throw new ArgumentException("Invalid units for conversion.");
+            }
+
+            return value * (unitMap[toUnit] / unitMap[fromUnit]);
+        }
+
+        static double ConvertTemperature(double value, string fromUnit, string toUnit)
+        {
+            if (fromUnit == "celsius" && toUnit == "fahrenheit") return (value * 9 / 5) + 32;
+            if (fromUnit == "fahrenheit" && toUnit == "celsius") return (value - 32) * 5 / 9;
+            if (fromUnit == "celsius" && toUnit == "kelvin") return value + 273.15;
+            if (fromUnit == "kelvin" && toUnit == "celsius") return value - 273.15;
+            if (fromUnit == "fahrenheit" && toUnit == "kelvin") return (value - 32) * 5 / 9 + 273.15;
+            if (fromUnit == "kelvin" && toUnit == "fahrenheit") return (value - 273.15) * 9 / 5 + 32;
+
+            throw new ArgumentException("Invalid temperature conversion.");
+        }
+    }
+}
